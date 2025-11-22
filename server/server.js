@@ -22,7 +22,7 @@ await connectDB();
 await connectCloudinary();
 
 // ✅ Middleware (important order)
-const allowedOrigins = ['http://localhost:5173','https://greencart-umber-gamma.vercel.app']; 
+const allowedOrigins = ['http://localhost:5173','https://greencart-umber-gamma.vercel.app','https://greencart-kf31zg2e7-sakshis-projects-ac7e9add.vercel.app']; 
 
 // Stripe webhook must be before express.json() for raw body parsing
 app.post('/api/order/stripe-webhook', express.raw({ type: 'application/json' }), stripeWebhook);

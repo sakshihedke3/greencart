@@ -17,26 +17,43 @@ import { stripeWebhook } from './controllers/orderController.js';
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Connect to DB & Cloudinary
+// ✅ Connect to DB & Cloudinary
 await connectDB();
 await connectCloudinary();
 
-// ✅ Middleware (important order)
-const allowedOrigins = ['http://localhost:5173','https://greencart-umber-gamma.vercel.app','https://greencart-kf31zg2e7-sakshis-projects-ac7e9add.vercel.app']; 
+// ✅ Allowed origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://greencart-umber-gamma.vercel.app',
+  'https://greencart-kf31zg2e7-sakshis-projects-ac7e9add.vercel.app'
+];
 
-// Stripe webhook must be before express.json() for raw body parsing
-app.post('/api/order/stripe-webhook', express.raw({ type: 'application/json' }), stripeWebhook);
+// ✅ Stripe webhook (MUST be before express.json)
+app.post(
+  '/api/order/stripe-webhook',
+  express.raw({ type: 'application/json' }),
+  stripeWebhook
+);
 
-// Then, use general middleware
+// ✅ CORS should be FIRST middleware
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
+// ✅ Handle preflight requests (VERY IMPORTANT)
+app.options('*', cors());
+
+// ✅ Other middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-// ✅ Routes
+// ✅ Test route
 app.get('/', (req, res) => {
   res.send("API is working ✅");
 });
 
+// ✅ Routes
 app.use('/api/user', userRouter);
 app.use('/api/seller', sellerRouter);
 app.use('/api/product', productRouter);

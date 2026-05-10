@@ -42,7 +42,7 @@ app.use(cors({
 }));
 
 // ✅ Handle preflight requests (VERY IMPORTANT)
-app.options('*', cors());
+// app.options('*', cors());
 
 // ✅ Other middleware
 app.use(express.json());
